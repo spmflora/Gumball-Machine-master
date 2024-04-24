@@ -19,16 +19,13 @@ public class GumballMachine implements IGumballMachine {
     public TransitionResult insertQuarter() {
         boolean succeeded = false;
         String message = "";
-        if (state.equalsIgnoreCase(HAS_QUARTER)) {
-            message = "You can't insert another quarter";
-        } else if (state.equalsIgnoreCase(NO_QUARTER)) {
+        if (state.equalsIgnoreCase(NO_QUARTER)) {
             state = HAS_QUARTER;
             message = "You inserted a quarter";
             succeeded = true;
-        } else if (state.equalsIgnoreCase(SOLD_OUT)) {
-            message = "You can't insert a quarter, the machine is sold out";
-        } else if (state.equalsIgnoreCase(SOLD)) {
-            message = "Please wait, we're already giving you a gumball";
+        }
+        else{
+            message = "Please crank the machine";
         }
         return new TransitionResult(succeeded, message, state, count);
     }
@@ -42,14 +39,8 @@ public class GumballMachine implements IGumballMachine {
             state = NO_QUARTER;
             finish = true;
         }
-        else if(state.equalsIgnoreCase(NO_QUARTER)){
-            m = "There is no quarter to eject";
-        }
-        else if(state.equalsIgnoreCase(SOLD_OUT)){
-            m = "There is no quarter to eject because the machine is sold out";
-        }
-        else if(state.equalsIgnoreCase(SOLD)){
-            m = "Please do not try to shortchange the machine";
+        else {
+            m = "There is no Quarter to eject";
         }
         return new TransitionResult(finish, m, state, count);
     }
@@ -63,14 +54,8 @@ public class GumballMachine implements IGumballMachine {
             state = SOLD;
             finish = true;
         }
-        else if(state.equalsIgnoreCase(NO_QUARTER)){
-            m = "There is no quarter to turn the crank";
-        }
-        else if(state.equalsIgnoreCase(SOLD_OUT)){
-            m = "There is no quarter to crank because the machine is sold out";
-        }
-        else if(state.equalsIgnoreCase(SOLD)){
-            m = "Please do not try to shortchange the machine";
+        else {
+            m = "You need to pay first";
         }
         return new TransitionResult(finish, m, state, count);
     }
@@ -78,20 +63,14 @@ public class GumballMachine implements IGumballMachine {
     public TransitionResult dispense(){
         boolean finish = false;
         String m = "";
-        if(state.equalsIgnoreCase(HAS_QUARTER)){
-            m = "Please turn the crank to continue";
-        }
-        else if(state.equalsIgnoreCase(NO_QUARTER)){
-            m = "Please insert a quarter then turn the crank to continue";
-        }
-        else if(state.equalsIgnoreCase(SOLD_OUT)){
-            m = "There is no ball to dispense because the machine is sold out";
-        }
-        else if(state.equalsIgnoreCase(SOLD)){
+        if(state.equalsIgnoreCase(SOLD)){
             m = "dispensing ball";
             releaseBall();
             state = NO_QUARTER;
             finish = true;
+        }
+        else{
+            m = "You need to crank first";
         }
         return new TransitionResult(finish, m, state, count);
     }
